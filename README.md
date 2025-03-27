@@ -1,5 +1,4 @@
 # Baú do Aventureiro 
-Um sistema de gerenciamento de equipamentos para Tormenta20.
 
 <p>O Baú do Aventureiro é uma aplicação que permite visualizar, organizar e personalizar equipamentos de Tormenta20, incluindo armas, armaduras, itens mágicos e muito mais. Com um banco de dados detalhado, o sistema suporta tanto itens oficiais quanto criações personalizadas, garantindo flexibilidade para mestres e jogadores.</p>
 
