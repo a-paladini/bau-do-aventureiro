@@ -4,12 +4,16 @@
 
 package db
 
+import (
+	"database/sql"
+)
+
 type Armours struct {
 	ID          int32   `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
+	Price       int32   `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 	CaBonus     int32   `json:"ca_bonus"`
@@ -21,24 +25,23 @@ type Items struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
+	Price       int32   `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 }
 
 type Weapons struct {
-	ID          int32   `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
-	Slot        float64 `json:"slot"`
-	Origin      string  `json:"origin"`
-	Damage      string  `json:"damage"`
-	Critical    string  `json:"critical"`
-	Range       string  `json:"range"`
-	TypeDamage  string  `json:"type_damage"`
-	Property    string  `json:"property"`
-	Proficiency string  `json:"proficiency"`
-	Special     string  `json:"special"`
+	ID          int32          `json:"id"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Price       int32          `json:"price"`
+	Slot        float64        `json:"slot"`
+	Origin      string         `json:"origin"`
+	Damage      string         `json:"damage"`
+	Critical    string         `json:"critical"`
+	Range       string         `json:"range"`
+	TypeDamage  string         `json:"type_damage"`
+	Property    string         `json:"property"`
+	Proficiency string         `json:"proficiency"`
+	Special     sql.NullString `json:"special"`
 }

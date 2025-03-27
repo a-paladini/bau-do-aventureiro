@@ -11,8 +11,8 @@ import (
 
 const createArmour = `-- name: CreateArmour :one
 INSERT INTO armours
-(name, description, category, price, slot,
-origin, ca_bonus, penality)
+(name, description, price, slot,
+origin, ca_bonus, penality, category)
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING id, name, description, category, price, slot, origin, ca_bonus, penality
 `
@@ -20,24 +20,24 @@ RETURNING id, name, description, category, price, slot, origin, ca_bonus, penali
 type CreateArmourParams struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
+	Price       int32   `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 	CaBonus     int32   `json:"ca_bonus"`
 	Penality    int32   `json:"penality"`
+	Category    string  `json:"category"`
 }
 
 func (q *Queries) CreateArmour(ctx context.Context, arg CreateArmourParams) (Armours, error) {
 	row := q.db.QueryRowContext(ctx, createArmour,
 		arg.Name,
 		arg.Description,
-		arg.Category,
 		arg.Price,
 		arg.Slot,
 		arg.Origin,
 		arg.CaBonus,
 		arg.Penality,
+		arg.Category,
 	)
 	var i Armours
 	err := row.Scan(
@@ -126,8 +126,8 @@ func (q *Queries) ListArmours(ctx context.Context) ([]Armours, error) {
 
 const updateArmour = `-- name: UpdateArmour :one
 UPDATE armours
-SET "name" = $2, "description" = $3, category = $4, price = $5, slot = $6,
-origin = $7, ca_bonus = $8, penality = $9
+SET name = $2, description = $3, price = $4, slot = $5,
+origin = $6, ca_bonus = $7, penality = $8, category = $9
 WHERE id = $1
 RETURNING id, name, description, category, price, slot, origin, ca_bonus, penality
 `
@@ -136,12 +136,12 @@ type UpdateArmourParams struct {
 	ID          int32   `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
+	Price       int32   `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 	CaBonus     int32   `json:"ca_bonus"`
 	Penality    int32   `json:"penality"`
+	Category    string  `json:"category"`
 }
 
 func (q *Queries) UpdateArmour(ctx context.Context, arg UpdateArmourParams) (Armours, error) {
@@ -149,12 +149,12 @@ func (q *Queries) UpdateArmour(ctx context.Context, arg UpdateArmourParams) (Arm
 		arg.ID,
 		arg.Name,
 		arg.Description,
-		arg.Category,
 		arg.Price,
 		arg.Slot,
 		arg.Origin,
 		arg.CaBonus,
 		arg.Penality,
+		arg.Category,
 	)
 	var i Armours
 	err := row.Scan(

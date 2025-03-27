@@ -7,38 +7,37 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 const createWeapon = `-- name: CreateWeapon :one
 INSERT INTO weapons 
-(name, description, category, price, slot, 
+(name, description, price, slot, 
 origin, damage, critical, range, type_damage, 
 property, proficiency, special)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
-RETURNING id, name, description, category, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+RETURNING id, name, description, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special
 `
 
 type CreateWeaponParams struct {
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
-	Slot        float64 `json:"slot"`
-	Origin      string  `json:"origin"`
-	Damage      string  `json:"damage"`
-	Critical    string  `json:"critical"`
-	Range       string  `json:"range"`
-	TypeDamage  string  `json:"type_damage"`
-	Property    string  `json:"property"`
-	Proficiency string  `json:"proficiency"`
-	Special     string  `json:"special"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Price       int32          `json:"price"`
+	Slot        float64        `json:"slot"`
+	Origin      string         `json:"origin"`
+	Damage      string         `json:"damage"`
+	Critical    string         `json:"critical"`
+	Range       string         `json:"range"`
+	TypeDamage  string         `json:"type_damage"`
+	Property    string         `json:"property"`
+	Proficiency string         `json:"proficiency"`
+	Special     sql.NullString `json:"special"`
 }
 
 func (q *Queries) CreateWeapon(ctx context.Context, arg CreateWeaponParams) (Weapons, error) {
 	row := q.db.QueryRowContext(ctx, createWeapon,
 		arg.Name,
 		arg.Description,
-		arg.Category,
 		arg.Price,
 		arg.Slot,
 		arg.Origin,
@@ -55,7 +54,6 @@ func (q *Queries) CreateWeapon(ctx context.Context, arg CreateWeaponParams) (Wea
 		&i.ID,
 		&i.Name,
 		&i.Description,
-		&i.Category,
 		&i.Price,
 		&i.Slot,
 		&i.Origin,
@@ -81,7 +79,7 @@ func (q *Queries) DeleteWeapon(ctx context.Context, id int32) error {
 }
 
 const getWeapon = `-- name: GetWeapon :one
-SELECT id, name, description, category, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special FROM weapons
+SELECT id, name, description, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special FROM weapons
 WHERE id = $1
 `
 
@@ -92,7 +90,6 @@ func (q *Queries) GetWeapon(ctx context.Context, id int32) (Weapons, error) {
 		&i.ID,
 		&i.Name,
 		&i.Description,
-		&i.Category,
 		&i.Price,
 		&i.Slot,
 		&i.Origin,
@@ -108,7 +105,7 @@ func (q *Queries) GetWeapon(ctx context.Context, id int32) (Weapons, error) {
 }
 
 const listWeapons = `-- name: ListWeapons :many
-SELECT id, name, description, category, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special FROM weapons
+SELECT id, name, description, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special FROM weapons
 ORDER BY id OFFSET 5
 `
 
@@ -125,7 +122,6 @@ func (q *Queries) ListWeapons(ctx context.Context) ([]Weapons, error) {
 			&i.ID,
 			&i.Name,
 			&i.Description,
-			&i.Category,
 			&i.Price,
 			&i.Slot,
 			&i.Origin,
@@ -152,28 +148,27 @@ func (q *Queries) ListWeapons(ctx context.Context) ([]Weapons, error) {
 
 const updateWeapon = `-- name: UpdateWeapon :one
 UPDATE weapons
-SET name = $2, description = $3, category = $4, price = $5, slot = $6,
-origin = $7, damage = $8, critical = $9, range = $10, type_damage = $11,
-property = $12, proficiency = $13, special = $14
+SET name = $2, description = $3, price = $4, slot = $5,
+origin = $6, damage = $7, critical = $8, range = $9, type_damage = $10,
+property = $11, proficiency = $12, special = $13
 WHERE id = $1
-RETURNING id, name, description, category, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special
+RETURNING id, name, description, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special
 `
 
 type UpdateWeaponParams struct {
-	ID          int32   `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
-	Slot        float64 `json:"slot"`
-	Origin      string  `json:"origin"`
-	Damage      string  `json:"damage"`
-	Critical    string  `json:"critical"`
-	Range       string  `json:"range"`
-	TypeDamage  string  `json:"type_damage"`
-	Property    string  `json:"property"`
-	Proficiency string  `json:"proficiency"`
-	Special     string  `json:"special"`
+	ID          int32          `json:"id"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Price       int32          `json:"price"`
+	Slot        float64        `json:"slot"`
+	Origin      string         `json:"origin"`
+	Damage      string         `json:"damage"`
+	Critical    string         `json:"critical"`
+	Range       string         `json:"range"`
+	TypeDamage  string         `json:"type_damage"`
+	Property    string         `json:"property"`
+	Proficiency string         `json:"proficiency"`
+	Special     sql.NullString `json:"special"`
 }
 
 func (q *Queries) UpdateWeapon(ctx context.Context, arg UpdateWeaponParams) (Weapons, error) {
@@ -181,7 +176,6 @@ func (q *Queries) UpdateWeapon(ctx context.Context, arg UpdateWeaponParams) (Wea
 		arg.ID,
 		arg.Name,
 		arg.Description,
-		arg.Category,
 		arg.Price,
 		arg.Slot,
 		arg.Origin,
@@ -198,7 +192,6 @@ func (q *Queries) UpdateWeapon(ctx context.Context, arg UpdateWeaponParams) (Wea
 		&i.ID,
 		&i.Name,
 		&i.Description,
-		&i.Category,
 		&i.Price,
 		&i.Slot,
 		&i.Origin,

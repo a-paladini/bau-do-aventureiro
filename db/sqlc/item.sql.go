@@ -20,7 +20,7 @@ type CreateItemParams struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
+	Price       int32   `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 }
@@ -126,7 +126,7 @@ type UpdateItemParams struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Category    string  `json:"category"`
-	Price       float64 `json:"price"`
+	Price       int32   `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 }
