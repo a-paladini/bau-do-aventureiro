@@ -1,52 +1,46 @@
-CREATE TABLE "armas" (
+CREATE TABLE "weapons" (
   "id" SERIAL PRIMARY KEY,
-  "nome" VARCHAR NOT NULL,
-  "descricao" VARCHAR NOT NULL,
-  "categoria" VARCHAR NOT NULL,
-  "preco" FLOAT NOT NULL,
-  "espaco" FLOAT NOT NULL,
-  "origem" VARCHAR NOT NULL,
-  "dano" VARCHAR NOT NULL,
-  "critico" VARCHAR,
-  "alcance" VARCHAR,
-  "tipo_dano" VARCHAR,
-  "empunhadura" VARCHAR,
-  "proficiencia" VARCHAR,
-  "habilidades" VARCHAR
+  "name" VARCHAR NOT NULL,
+  "description" VARCHAR NOT NULL,
+  "category" VARCHAR NOT NULL,
+  "price" FLOAT NOT NULL,
+  "slot" FLOAT NOT NULL,
+  "origin" VARCHAR NOT NULL,
+  "damage" VARCHAR NOT NULL,
+  "critical" VARCHAR NOT NULL,
+  "range" VARCHAR NOT NULL,
+  "type_damage" VARCHAR NOT NULL,
+  "property" VARCHAR NOT NULL,
+  "proficiency" VARCHAR NOT NULL,
+  "special" VARCHAR NOT NULL
 );
 
-CREATE TABLE "armaduras" (
+CREATE TABLE "armours" (
   "id" SERIAL PRIMARY KEY,
-  "nome" VARCHAR NOT NULL,
-  "descricao" VARCHAR NOT NULL,
-  "categoria" VARCHAR NOT NULL,
-  "preco" FLOAT NOT NULL,
-  "espaco" FLOAT NOT NULL,
-  "origem" VARCHAR NOT NULL,
-  "bonus_na_defesa" INT,
-  "penalidade_de_armadura" INT
+  "name" VARCHAR NOT NULL,
+  "description" VARCHAR NOT NULL,
+  "category" VARCHAR NOT NULL,
+  "price" FLOAT NOT NULL,
+  "slot" FLOAT NOT NULL,
+  "origin" VARCHAR NOT NULL,
+  "ca_bonus" INT NOT NULL,
+  "penality" INT NOT NULL
 );
 
-CREATE TABLE "itens" (
+CREATE TABLE "items" (
   "id" SERIAL PRIMARY KEY,
-  "nome" VARCHAR NOT NULL,
-  "descricao" VARCHAR NOT NULL,
-  "categoria" VARCHAR NOT NULL,
-  "preco" FLOAT NOT NULL,
-  "espaco" FLOAT DEFAULT 0,
-  "origem" VARCHAR NOT NULL
+  "name" VARCHAR NOT NULL,
+  "description" VARCHAR NOT NULL,
+  "category" VARCHAR NOT NULL,
+  "price" FLOAT NOT NULL,
+  "slot" FLOAT NOT NULL,
+  "origin" VARCHAR NOT NULL
 );
 
-CREATE INDEX ON "armas" ("categoria");
+CREATE INDEX ON "weapons" ("category");
 
-CREATE INDEX ON "armas" ("tipo_dano");
+CREATE INDEX ON "weapons" ("type_damage");
 
-CREATE INDEX ON "armaduras" ("categoria");
+CREATE INDEX ON "armours" ("category");
 
-CREATE INDEX ON "itens" ("categoria");
-
-COMMENT ON COLUMN "armas"."preco" IS 'valor em moedas de prata';
-
-COMMENT ON COLUMN "armaduras"."preco" IS 'valor em moedas de prata';
-
-COMMENT ON COLUMN "itens"."preco" IS 'valor em moedas de prata';
+CREATE INDEX ON "items" ("category");
