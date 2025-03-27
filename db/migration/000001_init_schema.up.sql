@@ -2,8 +2,7 @@ CREATE TABLE "weapons" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
-  "category" VARCHAR NOT NULL,
-  "price" FLOAT NOT NULL,
+  "price" INT NOT NULL,
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL,
   "damage" VARCHAR NOT NULL,
@@ -12,7 +11,7 @@ CREATE TABLE "weapons" (
   "type_damage" VARCHAR NOT NULL,
   "property" VARCHAR NOT NULL,
   "proficiency" VARCHAR NOT NULL,
-  "special" VARCHAR NOT NULL
+  "special" VARCHAR
 );
 
 CREATE TABLE "armours" (
@@ -20,7 +19,7 @@ CREATE TABLE "armours" (
   "name" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
   "category" VARCHAR NOT NULL,
-  "price" FLOAT NOT NULL,
+  "price" INT NOT NULL,
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL,
   "ca_bonus" INT NOT NULL,
@@ -32,15 +31,11 @@ CREATE TABLE "items" (
   "name" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
   "category" VARCHAR NOT NULL,
-  "price" FLOAT NOT NULL,
+  "price" INT NOT NULL,
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL
 );
 
-CREATE INDEX ON "weapons" ("category");
-
 CREATE INDEX ON "weapons" ("type_damage");
-
-CREATE INDEX ON "armours" ("category");
 
 CREATE INDEX ON "items" ("category");
