@@ -28,6 +28,7 @@ func createTestItem(t *testing.T) []Items {
 		arg := CreateItemParams{
 			Name:        i.Name,
 			Description: i.Description,
+			Category:    i.Category,
 			Price:       i.Price,
 			Slot:        i.Slot,
 			Origin:      i.Origin,
@@ -39,6 +40,7 @@ func createTestItem(t *testing.T) []Items {
 
 		require.Equal(t, arg.Name, item.Name)
 		require.Equal(t, arg.Description, item.Description)
+		require.Equal(t, arg.Category, item.Category)
 		require.Equal(t, arg.Price, item.Price)
 		require.Equal(t, arg.Slot, item.Slot)
 
@@ -62,6 +64,7 @@ func TestGetItem(t *testing.T) {
 
 		require.Equal(t, item.Name, i.Name)
 		require.Equal(t, item.Description, i.Description)
+		require.Equal(t, item.Category, i.Category)
 		require.Equal(t, item.Price, i.Price)
 		require.Equal(t, item.Slot, i.Slot)
 	}
@@ -86,8 +89,10 @@ func TestUpdateItem(t *testing.T) {
 			ID:          item.ID,
 			Name:        item.Name + "_updated",
 			Description: item.Description + "_updated",
+			Category:    item.Category + "_updated",
 			Price:       item.Price + 100,
 			Slot:        item.Slot + 1,
+			Origin:      item.Origin + "_updated",
 		}
 
 		i, err := testQueries.UpdateItem(context.Background(), arg)
@@ -96,6 +101,7 @@ func TestUpdateItem(t *testing.T) {
 
 		require.Equal(t, arg.Name, i.Name)
 		require.Equal(t, arg.Description, i.Description)
+		require.Equal(t, arg.Category, i.Category)
 		require.Equal(t, arg.Price, i.Price)
 		require.Equal(t, arg.Slot, i.Slot)
 	}
