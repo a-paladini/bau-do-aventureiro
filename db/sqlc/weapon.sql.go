@@ -22,7 +22,7 @@ RETURNING id, name, description, price, slot, origin, damage, critical, range, t
 type CreateWeaponParams struct {
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
-	Price       int32          `json:"price"`
+	Price       float64        `json:"price"`
 	Slot        float64        `json:"slot"`
 	Origin      string         `json:"origin"`
 	Damage      string         `json:"damage"`
@@ -159,7 +159,7 @@ type UpdateWeaponParams struct {
 	ID          int32          `json:"id"`
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
-	Price       int32          `json:"price"`
+	Price       float64        `json:"price"`
 	Slot        float64        `json:"slot"`
 	Origin      string         `json:"origin"`
 	Damage      string         `json:"damage"`

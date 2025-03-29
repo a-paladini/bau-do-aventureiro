@@ -58,7 +58,7 @@ func ProcessExcelDataWeapons(sheets map[string][][]string) ([]Weapons, error) {
 
 			weapons = append(weapons, Weapons{
 				Name:        row[0],
-				Price:       ParseInt(row[1]),
+				Price:       ParseFloat(row[1]),
 				Damage:      row[2],
 				Critical:    row[3],
 				Range:       row[4],
@@ -87,7 +87,7 @@ func ProcessExcelDataArmours(sheets map[string][][]string) ([]Armours, error) {
 
 			armours = append(armours, Armours{
 				Name:        row[0],
-				Price:       ParseInt(row[1]),
+				Price:       ParseFloat(row[1]),
 				Slot:        ParseFloat(row[2]),
 				Category:    row[3],
 				CaBonus:     ParseInt(row[4]),
@@ -113,7 +113,7 @@ func ProcessExcelDataItems(sheets map[string][][]string) ([]Items, error) {
 			items = append(items, Items{
 				Name:        row[0],
 				Category:    row[1],
-				Price:       ParseInt(row[2]),
+				Price:       ParseFloat(row[2]),
 				Slot:        ParseFloat(row[3]),
 				Origin:      row[4],
 				Description: row[5],

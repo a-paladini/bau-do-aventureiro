@@ -2,7 +2,7 @@ CREATE TABLE "weapons" (
   "id" SERIAL PRIMARY KEY,
   "name" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
-  "price" INT NOT NULL,
+  "price" FLOAT NOT NULL,
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL,
   "damage" VARCHAR NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE "armours" (
   "name" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
   "category" VARCHAR NOT NULL,
-  "price" INT NOT NULL,
+  "price" FLOAT NOT NULL,
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL,
   "ca_bonus" INT NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE "items" (
   "name" VARCHAR NOT NULL,
   "description" VARCHAR NOT NULL,
   "category" VARCHAR NOT NULL,
-  "price" INT NOT NULL,
+  "price" FLOAT NOT NULL,
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL
 );

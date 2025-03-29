@@ -13,7 +13,7 @@ type Armours struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Category    string  `json:"category"`
-	Price       int32   `json:"price"`
+	Price       float64 `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 	CaBonus     int32   `json:"ca_bonus"`
@@ -25,7 +25,7 @@ type Items struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Category    string  `json:"category"`
-	Price       int32   `json:"price"`
+	Price       float64 `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 }
@@ -34,7 +34,7 @@ type Weapons struct {
 	ID          int32          `json:"id"`
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
-	Price       int32          `json:"price"`
+	Price       float64        `json:"price"`
 	Slot        float64        `json:"slot"`
 	Origin      string         `json:"origin"`
 	Damage      string         `json:"damage"`

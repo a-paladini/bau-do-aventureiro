@@ -20,7 +20,7 @@ RETURNING id, name, description, category, price, slot, origin, ca_bonus, penali
 type CreateArmourParams struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Price       int32   `json:"price"`
+	Price       float64 `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 	CaBonus     int32   `json:"ca_bonus"`
@@ -136,7 +136,7 @@ type UpdateArmourParams struct {
 	ID          int32   `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Price       int32   `json:"price"`
+	Price       float64 `json:"price"`
 	Slot        float64 `json:"slot"`
 	Origin      string  `json:"origin"`
 	CaBonus     int32   `json:"ca_bonus"`
