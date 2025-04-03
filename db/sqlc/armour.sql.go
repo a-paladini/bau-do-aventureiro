@@ -86,13 +86,52 @@ func (q *Queries) GetArmour(ctx context.Context, id int32) (Armours, error) {
 	return i, err
 }
 
-const listArmours = `-- name: ListArmours :many
+const listAllArmours = `-- name: ListAllArmours :many
 SELECT id, name, description, category, price, slot, origin, ca_bonus, penality FROM armours
-ORDER BY id OFFSET 5
+ORDER BY category, ca_bonus, price OFFSET 5
 `
 
-func (q *Queries) ListArmours(ctx context.Context) ([]Armours, error) {
-	rows, err := q.db.QueryContext(ctx, listArmours)
+func (q *Queries) ListAllArmours(ctx context.Context) ([]Armours, error) {
+	rows, err := q.db.QueryContext(ctx, listAllArmours)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Armours
+	for rows.Next() {
+		var i Armours
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Category,
+			&i.Price,
+			&i.Slot,
+			&i.Origin,
+			&i.CaBonus,
+			&i.Penality,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listArmoursByCategory = `-- name: ListArmoursByCategory :many
+SELECT id, name, description, category, price, slot, origin, ca_bonus, penality FROM armours
+WHERE category = $1
+ORDER BY ca_bonus, price OFFSET 5
+`
+
+func (q *Queries) ListArmoursByCategory(ctx context.Context, category string) ([]Armours, error) {
+	rows, err := q.db.QueryContext(ctx, listArmoursByCategory, category)
 	if err != nil {
 		return nil, err
 	}

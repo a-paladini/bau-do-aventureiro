@@ -50,6 +50,8 @@ func createTestArmour(t *testing.T) []Armours {
 		require.Equal(t, arg.CaBonus, armour.CaBonus)
 		require.Equal(t, arg.Penality, armour.Penality)
 
+		require.NotZero(t, armour.ID)
+
 		listArmours = append(listArmours, armour)
 	}
 
@@ -83,7 +85,7 @@ func TestGetArmour(t *testing.T) {
 func TestListArmours(t *testing.T) {
 	_ = createTestArmour(t)
 
-	armours, err := testQueries.ListArmours(context.Background())
+	armours, err := testQueries.ListAllArmours(context.Background())
 	require.NoError(t, err)
 
 	for _, a := range armours {

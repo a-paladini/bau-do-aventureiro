@@ -77,13 +77,50 @@ func (q *Queries) GetItem(ctx context.Context, id int32) (Items, error) {
 	return i, err
 }
 
-const listItems = `-- name: ListItems :many
+const listAllItems = `-- name: ListAllItems :many
 SELECT id, name, description, category, price, slot, origin FROM items
-ORDER BY id OFFSET 5
+ORDER BY category, price OFFSET 5
 `
 
-func (q *Queries) ListItems(ctx context.Context) ([]Items, error) {
-	rows, err := q.db.QueryContext(ctx, listItems)
+func (q *Queries) ListAllItems(ctx context.Context) ([]Items, error) {
+	rows, err := q.db.QueryContext(ctx, listAllItems)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Items
+	for rows.Next() {
+		var i Items
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Category,
+			&i.Price,
+			&i.Slot,
+			&i.Origin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listItemsByCategory = `-- name: ListItemsByCategory :many
+SELECT id, name, description, category, price, slot, origin FROM items
+WHERE UPPER(category) = $1
+ORDER BY price, name
+`
+
+func (q *Queries) ListItemsByCategory(ctx context.Context, category string) ([]Items, error) {
+	rows, err := q.db.QueryContext(ctx, listItemsByCategory, category)
 	if err != nil {
 		return nil, err
 	}

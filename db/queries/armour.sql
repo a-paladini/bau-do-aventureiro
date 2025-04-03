@@ -9,9 +9,14 @@ RETURNING *;
 SELECT * FROM armours
 WHERE id = $1;
 
--- name: ListArmours :many
+-- name: ListAllArmours :many
 SELECT * FROM armours
-ORDER BY id OFFSET 5;
+ORDER BY category, ca_bonus, price OFFSET 5;
+
+-- name: ListArmoursByCategory :many
+SELECT * FROM armours
+WHERE category = $1
+ORDER BY ca_bonus, price OFFSET 5;
 
 -- name: UpdateArmour :one
 UPDATE armours

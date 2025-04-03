@@ -9,7 +9,55 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createTestWeapon(t *testing.T) []Weapons {
+func createTestWeapon(t *testing.T) Weapons {
+	arg := CreateWeaponParams{
+		Name:        "Adaga",
+		Description: "Descrição longa de exemplo da Adaga",
+		Price:       2,
+		Slot:        1,
+		Origin:      "Livro T20 - Base",
+		Damage:      "1d4",
+		Critical:    "19",
+		Range:       "Curto",
+		TypeDamage:  "Perfuração",
+		Property:    "Leve",
+		Proficiency: "Simples",
+		Special:     sql.NullString{String: "Discreta", Valid: true},
+	}
+
+	weapon, err := testQueries.CreateWeapon(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, weapon)
+
+	require.Equal(t, arg.Name, weapon.Name)
+	require.Equal(t, arg.Description, weapon.Description)
+	require.Equal(t, arg.Price, weapon.Price)
+	require.Equal(t, arg.Slot, weapon.Slot)
+	require.Equal(t, arg.Origin, weapon.Origin)
+	require.Equal(t, arg.Damage, weapon.Damage)
+	require.Equal(t, arg.Critical, weapon.Critical)
+	require.Equal(t, arg.Range, weapon.Range)
+	require.Equal(t, arg.TypeDamage, weapon.TypeDamage)
+	require.Equal(t, arg.Property, weapon.Property)
+	require.Equal(t, arg.Proficiency, weapon.Proficiency)
+	require.Equal(t, arg.Special, weapon.Special)
+
+	require.NotZero(t, weapon.ID)
+
+	require.NotEmpty(t, weapon.Name)
+	require.NotEmpty(t, weapon.Description)
+	require.NotEmpty(t, weapon.Origin)
+	require.NotEmpty(t, weapon.Damage)
+	require.NotEmpty(t, weapon.Critical)
+	require.NotEmpty(t, weapon.Range)
+	require.NotEmpty(t, weapon.TypeDamage)
+	require.NotEmpty(t, weapon.Property)
+	require.NotEmpty(t, weapon.Proficiency)
+
+	return weapon
+}
+
+func createTestWeapons(t *testing.T) []Weapons {
 	sheets, err := ReadExcelSheets("testdata/data.xlsx")
 	if err != nil {
 		log.Fatalf("Error reading Excel file: %v", err)
@@ -60,8 +108,6 @@ func createTestWeapon(t *testing.T) []Weapons {
 		require.Equal(t, arg.Special, weapon.Special)
 
 		require.NotZero(t, weapon.ID)
-		require.NotZero(t, weapon.Price)
-		require.NotZero(t, weapon.Slot)
 
 		require.NotEmpty(t, weapon.Name)
 		require.NotEmpty(t, weapon.Description)
@@ -84,7 +130,7 @@ func TestCreateWeapon(t *testing.T) {
 }
 
 func TestGetWeapon(t *testing.T) {
-	weapons := createTestWeapon(t)
+	weapons := createTestWeapons(t)
 
 	for _, w := range weapons {
 		weapon, err := testQueries.GetWeapon(context.Background(), w.ID)
@@ -108,22 +154,20 @@ func TestGetWeapon(t *testing.T) {
 }
 
 func TestDeleteWeapon(t *testing.T) {
-	weapons := createTestWeapon(t)
+	weapon := createTestWeapon(t)
 
-	for _, w := range weapons {
-		err := testQueries.DeleteWeapon(context.Background(), w.ID)
-		require.NoError(t, err)
+	err := testQueries.DeleteWeapon(context.Background(), weapon.ID)
+	require.NoError(t, err)
 
-		weapon, err := testQueries.GetWeapon(context.Background(), w.ID)
-		require.Error(t, err)
-		require.Empty(t, weapon)
-	}
+	weapon2, err := testQueries.GetWeapon(context.Background(), weapon.ID)
+	require.Error(t, err)
+	require.Empty(t, weapon2)
 }
 
 func TestListWeapons(t *testing.T) {
 	_ = createTestWeapon(t)
 
-	listWeapons, err := testQueries.ListWeapons(context.Background())
+	listWeapons, err := testQueries.ListAllWeapons(context.Background())
 	require.NoError(t, err)
 
 	for _, w := range listWeapons {
@@ -132,41 +176,39 @@ func TestListWeapons(t *testing.T) {
 }
 
 func TestUpdateWeapon(t *testing.T) {
-	weapons := createTestWeapon(t)
+	weapon := createTestWeapon(t)
 
-	for _, w := range weapons {
-		arg := UpdateWeaponParams{
-			ID:          w.ID,
-			Name:        w.Name + "_updated",
-			Description: w.Description + "_updated",
-			Price:       w.Price + 100,
-			Slot:        w.Slot + 1,
-			Origin:      w.Origin + "_updated",
-			Damage:      w.Damage + "_updated",
-			Critical:    w.Critical + "_updated",
-			Range:       w.Range + "_updated",
-			TypeDamage:  w.TypeDamage + "_updated",
-			Property:    w.Property + "_updated",
-			Proficiency: w.Proficiency + "_updated",
-			Special:     sql.NullString{String: w.Special.String + "_updated", Valid: true},
-		}
-
-		weapon, err := testQueries.UpdateWeapon(context.Background(), arg)
-		require.NoError(t, err)
-		require.NotEmpty(t, weapon)
-
-		require.Equal(t, arg.ID, weapon.ID)
-		require.Equal(t, arg.Name, weapon.Name)
-		require.Equal(t, arg.Description, weapon.Description)
-		require.Equal(t, arg.Price, weapon.Price)
-		require.Equal(t, arg.Slot, weapon.Slot)
-		require.Equal(t, arg.Origin, weapon.Origin)
-		require.Equal(t, arg.Damage, weapon.Damage)
-		require.Equal(t, arg.Critical, weapon.Critical)
-		require.Equal(t, arg.Range, weapon.Range)
-		require.Equal(t, arg.TypeDamage, weapon.TypeDamage)
-		require.Equal(t, arg.Property, weapon.Property)
-		require.Equal(t, arg.Proficiency, weapon.Proficiency)
-		require.Equal(t, arg.Special, weapon.Special)
+	arg := UpdateWeaponParams{
+		ID:          weapon.ID,
+		Name:        weapon.Name + "_updated",
+		Description: weapon.Description + "_updated",
+		Price:       weapon.Price + 100,
+		Slot:        weapon.Slot + 1,
+		Origin:      weapon.Origin + "_updated",
+		Damage:      weapon.Damage + "_updated",
+		Critical:    weapon.Critical + "_updated",
+		Range:       weapon.Range + "_updated",
+		TypeDamage:  weapon.TypeDamage + "_updated",
+		Property:    weapon.Property + "_updated",
+		Proficiency: weapon.Proficiency + "_updated",
+		Special:     sql.NullString{String: weapon.Special.String + "_updated", Valid: true},
 	}
+
+	weapon, err := testQueries.UpdateWeapon(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, weapon)
+
+	require.Equal(t, arg.ID, weapon.ID)
+	require.Equal(t, arg.Name, weapon.Name)
+	require.Equal(t, arg.Description, weapon.Description)
+	require.Equal(t, arg.Price, weapon.Price)
+	require.Equal(t, arg.Slot, weapon.Slot)
+	require.Equal(t, arg.Origin, weapon.Origin)
+	require.Equal(t, arg.Damage, weapon.Damage)
+	require.Equal(t, arg.Critical, weapon.Critical)
+	require.Equal(t, arg.Range, weapon.Range)
+	require.Equal(t, arg.TypeDamage, weapon.TypeDamage)
+	require.Equal(t, arg.Property, weapon.Property)
+	require.Equal(t, arg.Proficiency, weapon.Proficiency)
+	require.Equal(t, arg.Special, weapon.Special)
 }

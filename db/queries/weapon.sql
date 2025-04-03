@@ -10,9 +10,14 @@ RETURNING *;
 SELECT * FROM weapons
 WHERE id = $1;
 
--- name: ListWeapons :many
+-- name: ListAllWeapons :many
 SELECT * FROM weapons
-ORDER BY id OFFSET 5;
+ORDER BY name OFFSET 5;
+
+-- name: ListWeaponsByCategory :many
+SELECT * FROM weapons
+WHERE UPPER(type_damage) = $1
+ORDER BY price OFFSET 5;
 
 -- name: UpdateWeapon :one
 UPDATE weapons

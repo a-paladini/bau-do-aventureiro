@@ -8,9 +8,14 @@ RETURNING *;
 SELECT * FROM items
 WHERE id = $1;
 
--- name: ListItems :many
+-- name: ListAllItems :many
 SELECT * FROM items
-ORDER BY id OFFSET 5;
+ORDER BY category, price OFFSET 5;
+
+-- name: ListItemsByCategory :many
+SELECT * FROM items
+WHERE UPPER(category) = $1
+ORDER BY price, name;
 
 -- name: UpdateItem :one
 UPDATE items

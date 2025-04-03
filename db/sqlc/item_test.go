@@ -44,6 +44,8 @@ func createTestItem(t *testing.T) []Items {
 		require.Equal(t, arg.Price, item.Price)
 		require.Equal(t, arg.Slot, item.Slot)
 
+		require.NotZero(t, item.ID)
+
 		listItems = append(listItems, item)
 	}
 
@@ -73,7 +75,7 @@ func TestGetItem(t *testing.T) {
 func TestListItems(t *testing.T) {
 	_ = createTestItem(t)
 
-	items, err := testQueries.ListItems(context.Background())
+	items, err := testQueries.ListAllItems(context.Background())
 	require.NoError(t, err)
 
 	for _, item := range items {
