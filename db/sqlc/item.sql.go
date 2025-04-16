@@ -79,16 +79,21 @@ func (q *Queries) GetItem(ctx context.Context, id int32) (Items, error) {
 
 const listAllItems = `-- name: ListAllItems :many
 SELECT id, name, description, category, price, slot, origin FROM items
-ORDER BY category, price OFFSET 5
+ORDER BY category, price LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListAllItems(ctx context.Context) ([]Items, error) {
-	rows, err := q.db.QueryContext(ctx, listAllItems)
+type ListAllItemsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListAllItems(ctx context.Context, arg ListAllItemsParams) ([]Items, error) {
+	rows, err := q.db.QueryContext(ctx, listAllItems, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Items
+	items := []Items{}
 	for rows.Next() {
 		var i Items
 		if err := rows.Scan(
@@ -116,16 +121,22 @@ func (q *Queries) ListAllItems(ctx context.Context) ([]Items, error) {
 const listItemsByCategory = `-- name: ListItemsByCategory :many
 SELECT id, name, description, category, price, slot, origin FROM items
 WHERE UPPER(category) = $1
-ORDER BY price, name
+ORDER BY price, name LIMIT $2 OFFSET $3
 `
 
-func (q *Queries) ListItemsByCategory(ctx context.Context, category string) ([]Items, error) {
-	rows, err := q.db.QueryContext(ctx, listItemsByCategory, category)
+type ListItemsByCategoryParams struct {
+	Category string `json:"category"`
+	Limit    int32  `json:"limit"`
+	Offset   int32  `json:"offset"`
+}
+
+func (q *Queries) ListItemsByCategory(ctx context.Context, arg ListItemsByCategoryParams) ([]Items, error) {
+	rows, err := q.db.QueryContext(ctx, listItemsByCategory, arg.Category, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Items
+	items := []Items{}
 	for rows.Next() {
 		var i Items
 		if err := rows.Scan(

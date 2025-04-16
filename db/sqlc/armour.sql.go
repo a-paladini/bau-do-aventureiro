@@ -88,16 +88,21 @@ func (q *Queries) GetArmour(ctx context.Context, id int32) (Armours, error) {
 
 const listAllArmours = `-- name: ListAllArmours :many
 SELECT id, name, description, category, price, slot, origin, ca_bonus, penality FROM armours
-ORDER BY category, ca_bonus, price OFFSET 5
+ORDER BY category, ca_bonus, price LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListAllArmours(ctx context.Context) ([]Armours, error) {
-	rows, err := q.db.QueryContext(ctx, listAllArmours)
+type ListAllArmoursParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListAllArmours(ctx context.Context, arg ListAllArmoursParams) ([]Armours, error) {
+	rows, err := q.db.QueryContext(ctx, listAllArmours, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Armours
+	items := []Armours{}
 	for rows.Next() {
 		var i Armours
 		if err := rows.Scan(
@@ -127,16 +132,22 @@ func (q *Queries) ListAllArmours(ctx context.Context) ([]Armours, error) {
 const listArmoursByCategory = `-- name: ListArmoursByCategory :many
 SELECT id, name, description, category, price, slot, origin, ca_bonus, penality FROM armours
 WHERE category = $1
-ORDER BY ca_bonus, price OFFSET 5
+ORDER BY ca_bonus, price LIMIT $2 OFFSET $3
 `
 
-func (q *Queries) ListArmoursByCategory(ctx context.Context, category string) ([]Armours, error) {
-	rows, err := q.db.QueryContext(ctx, listArmoursByCategory, category)
+type ListArmoursByCategoryParams struct {
+	Category string `json:"category"`
+	Limit    int32  `json:"limit"`
+	Offset   int32  `json:"offset"`
+}
+
+func (q *Queries) ListArmoursByCategory(ctx context.Context, arg ListArmoursByCategoryParams) ([]Armours, error) {
+	rows, err := q.db.QueryContext(ctx, listArmoursByCategory, arg.Category, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Armours
+	items := []Armours{}
 	for rows.Next() {
 		var i Armours
 		if err := rows.Scan(

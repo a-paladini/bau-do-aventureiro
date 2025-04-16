@@ -60,21 +60,23 @@ func (store *Store) GetWeaponTx(ctx context.Context, id int32) (Weapons, error) 
 	return weapon, err
 }
 
-func (store *Store) ListAllWeaponsTx(ctx context.Context) ([]Weapons, error) {
+func (store *Store) ListAllWeaponsTx(ctx context.Context, args ListAllWeaponsParams) ([]Weapons, error) {
 	var listWeapons []Weapons
+
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		listWeapons, err = q.ListAllWeapons(ctx)
+		listWeapons, err = q.ListAllWeapons(ctx, args)
 		return err
 	})
 	return listWeapons, err
 }
 
-func (store *Store) ListWeaponsByCategoryTx(ctx context.Context, category string) ([]Weapons, error) {
+func (store *Store) ListWeaponsByCategoryTx(ctx context.Context, arg ListWeaponsByCategoryParams) ([]Weapons, error) {
 	var listWeapons []Weapons
+
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		listWeapons, err = q.ListWeaponsByCategory(ctx, category)
+		listWeapons, err = q.ListWeaponsByCategory(ctx, arg)
 		return err
 	})
 	return listWeapons, err
@@ -117,21 +119,21 @@ func (store *Store) GetItemTx(ctx context.Context, id int32) (Items, error) {
 	return item, err
 }
 
-func (store *Store) ListAllItemsTx(ctx context.Context) ([]Items, error) {
+func (store *Store) ListAllItemsTx(ctx context.Context, arg ListAllItemsParams) ([]Items, error) {
 	var items []Items
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		items, err = q.ListAllItems(ctx)
+		items, err = q.ListAllItems(ctx, arg)
 		return err
 	})
 	return items, err
 }
 
-func (store *Store) ListItemsByCategoryTx(ctx context.Context, category string) ([]Items, error) {
+func (store *Store) ListItemsByCategoryTx(ctx context.Context, arg ListItemsByCategoryParams) ([]Items, error) {
 	var items []Items
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		items, err = q.ListItemsByCategory(ctx, category)
+		items, err = q.ListItemsByCategory(ctx, arg)
 		return err
 	})
 	return items, err
@@ -174,22 +176,22 @@ func (store *Store) GetArmourTx(ctx context.Context, id int32) (Armours, error) 
 	return armour, err
 }
 
-func (store *Store) ListAllArmoursTx(ctx context.Context) ([]Armours, error) {
+func (store *Store) ListAllArmoursTx(ctx context.Context, arg ListAllArmoursParams) ([]Armours, error) {
 	var armours []Armours
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		armours, err = q.ListAllArmours(ctx)
+		armours, err = q.ListAllArmours(ctx, arg)
 		return err
 	})
 
 	return armours, err
 }
 
-func (store *Store) ListArmoursByCategoryTx(ctx context.Context, category string) ([]Armours, error) {
+func (store *Store) ListArmoursByCategoryTx(ctx context.Context, arg ListArmoursByCategoryParams) ([]Armours, error) {
 	var armours []Armours
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		armours, err = q.ListArmoursByCategory(context.Background(), category)
+		armours, err = q.ListArmoursByCategory(context.Background(), arg)
 		return err
 	})
 	return armours, err

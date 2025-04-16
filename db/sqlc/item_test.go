@@ -72,10 +72,15 @@ func TestGetItem(t *testing.T) {
 	}
 }
 
-func TestListItems(t *testing.T) {
+func TestListAllItems(t *testing.T) {
 	_ = createTestItem(t)
 
-	items, err := testQueries.ListAllItems(context.Background())
+	args := ListAllItemsParams{
+		Limit:  10,
+		Offset: 5,
+	}
+
+	items, err := testQueries.ListAllItems(context.Background(), args)
 	require.NoError(t, err)
 
 	for _, item := range items {

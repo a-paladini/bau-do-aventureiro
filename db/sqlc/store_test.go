@@ -149,8 +149,13 @@ func TestGetWeaponTx(t *testing.T) {
 func TestListAllWeaponTx(t *testing.T) {
 	store := NewStore(testDB)
 
+	args := ListAllWeaponsParams{
+		Limit:  10,
+		Offset: 5,
+	}
+
 	_ = createManyWeapons(t)
-	listWeapons, err := store.ListAllWeapons(context.Background())
+	listWeapons, err := store.ListAllWeapons(context.Background(), args)
 	require.NoError(t, err)
 
 	for _, weapon := range listWeapons {
@@ -162,7 +167,14 @@ func TestListWeaponsByCategory(t *testing.T) {
 	store := NewStore(testDB)
 
 	aux := createManyWeapons(t)
-	listWeapons, err := store.ListWeaponsByCategoryTx(context.Background(), aux[0].TypeDamage)
+
+	args := ListWeaponsByCategoryParams{
+		Limit:      10,
+		Offset:     5,
+		TypeDamage: aux[0].TypeDamage,
+	}
+
+	listWeapons, err := store.ListWeaponsByCategoryTx(context.Background(), args)
 	require.NoError(t, err)
 
 	for _, weapon := range listWeapons {
@@ -339,7 +351,13 @@ func TestListAllArmourTx(t *testing.T) {
 	store := NewStore(testDB)
 
 	_ = createManyWeapons(t)
-	listArmours, err := store.ListAllWeapons(context.Background())
+
+	args := ListAllWeaponsParams{
+		Limit:  10,
+		Offset: 5,
+	}
+
+	listArmours, err := store.ListAllWeapons(context.Background(), args)
 	require.NoError(t, err)
 
 	for _, armour := range listArmours {
@@ -351,7 +369,14 @@ func TestLisArmourByCategoryTx(t *testing.T) {
 	store := NewStore(testDB)
 
 	aux := createManyArmours(t)
-	listArmours, err := store.ListArmoursByCategoryTx(context.Background(), aux[0].Category)
+
+	arg := ListArmoursByCategoryParams{
+		Category: aux[0].Category,
+		Limit:    10,
+		Offset:   5,
+	}
+
+	listArmours, err := store.ListArmoursByCategoryTx(context.Background(), arg)
 	require.NoError(t, err)
 
 	for _, armour := range listArmours {
@@ -509,7 +534,12 @@ func TestListAllItemsTx(t *testing.T) {
 	store := NewStore(testDB)
 
 	_ = createManyItems(t)
-	items, err := store.ListAllItemsTx(context.Background())
+	arg := ListAllItemsParams{
+		Limit:  10,
+		Offset: 5,
+	}
+
+	items, err := store.ListAllItemsTx(context.Background(), arg)
 	require.NoError(t, err)
 
 	for _, item := range items {
@@ -521,7 +551,14 @@ func TestListItemsByCategoryTx(t *testing.T) {
 	store := NewStore(testDB)
 
 	aux := createManyItems(t)
-	items, err := store.ListItemsByCategoryTx(context.Background(), aux[0].Category)
+
+	args := ListItemsByCategoryParams{
+		Category: aux[0].Category,
+		Limit:    10,
+		Offset:   5,
+	}
+
+	items, err := store.ListItemsByCategoryTx(context.Background(), args)
 	require.NoError(t, err)
 
 	for _, item := range items {

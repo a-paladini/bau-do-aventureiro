@@ -82,10 +82,15 @@ func TestGetArmour(t *testing.T) {
 	}
 }
 
-func TestListArmours(t *testing.T) {
+func TestListAllArmours(t *testing.T) {
 	_ = createTestArmour(t)
 
-	armours, err := testQueries.ListAllArmours(context.Background())
+	arg := ListAllArmoursParams{
+		Limit:  10,
+		Offset: 5,
+	}
+
+	armours, err := testQueries.ListAllArmours(context.Background(), arg)
 	require.NoError(t, err)
 
 	for _, a := range armours {

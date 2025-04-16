@@ -106,16 +106,21 @@ func (q *Queries) GetWeapon(ctx context.Context, id int32) (Weapons, error) {
 
 const listAllWeapons = `-- name: ListAllWeapons :many
 SELECT id, name, description, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special FROM weapons
-ORDER BY name OFFSET 5
+ORDER BY name LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListAllWeapons(ctx context.Context) ([]Weapons, error) {
-	rows, err := q.db.QueryContext(ctx, listAllWeapons)
+type ListAllWeaponsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListAllWeapons(ctx context.Context, arg ListAllWeaponsParams) ([]Weapons, error) {
+	rows, err := q.db.QueryContext(ctx, listAllWeapons, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Weapons
+	items := []Weapons{}
 	for rows.Next() {
 		var i Weapons
 		if err := rows.Scan(
@@ -149,16 +154,22 @@ func (q *Queries) ListAllWeapons(ctx context.Context) ([]Weapons, error) {
 const listWeaponsByCategory = `-- name: ListWeaponsByCategory :many
 SELECT id, name, description, price, slot, origin, damage, critical, range, type_damage, property, proficiency, special FROM weapons
 WHERE UPPER(type_damage) = $1
-ORDER BY price OFFSET 5
+ORDER BY price LIMIT $2 OFFSET $3
 `
 
-func (q *Queries) ListWeaponsByCategory(ctx context.Context, typeDamage string) ([]Weapons, error) {
-	rows, err := q.db.QueryContext(ctx, listWeaponsByCategory, typeDamage)
+type ListWeaponsByCategoryParams struct {
+	TypeDamage string `json:"type_damage"`
+	Limit      int32  `json:"limit"`
+	Offset     int32  `json:"offset"`
+}
+
+func (q *Queries) ListWeaponsByCategory(ctx context.Context, arg ListWeaponsByCategoryParams) ([]Weapons, error) {
+	rows, err := q.db.QueryContext(ctx, listWeaponsByCategory, arg.TypeDamage, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Weapons
+	items := []Weapons{}
 	for rows.Next() {
 		var i Weapons
 		if err := rows.Scan(

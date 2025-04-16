@@ -167,7 +167,12 @@ func TestDeleteWeapon(t *testing.T) {
 func TestListWeapons(t *testing.T) {
 	_ = createTestWeapon(t)
 
-	listWeapons, err := testQueries.ListAllWeapons(context.Background())
+	args := ListAllWeaponsParams{
+		Limit:  10,
+		Offset: 5,
+	}
+
+	listWeapons, err := testQueries.ListAllWeapons(context.Background(), args)
 	require.NoError(t, err)
 
 	for _, w := range listWeapons {
