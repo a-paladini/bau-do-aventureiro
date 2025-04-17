@@ -135,11 +135,6 @@ func (server *Server) listWeaponsByCategory(ctx *gin.Context) {
 
 	listWeapon, err := server.store.ListWeaponsByCategory(ctx, arg)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
-
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -156,17 +151,13 @@ func (server *Server) deleteWeapon(ctx *gin.Context) {
 
 	weapon, err := server.store.GetWeapon(ctx, int32(req.ID))
 	if err != nil {
-		if err != sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	err = server.store.DeleteWeapon(ctx, int32(req.ID))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
