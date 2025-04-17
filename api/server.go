@@ -18,6 +18,8 @@ func NewServer(store *db.Store) *Server {
 	router.GET("/weapons/:id", server.getWeapon)
 	router.GET("/weapons", server.listAllWeapons)
 	router.GET("/weapons/:type", server.listWeaponsByCategory)
+	router.PUT("/weapons/:id", server.updateWeapon)
+	router.DELETE("/weapons/:id", server.deleteWeapon)
 
 	server.router = router
 	return server
