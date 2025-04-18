@@ -15,7 +15,7 @@ ORDER BY category, ca_bonus, price LIMIT $1 OFFSET $2;
 
 -- name: ListArmoursByCategory :many
 SELECT * FROM armours
-WHERE category = $1
+WHERE LOWER(category) = $1
 ORDER BY ca_bonus, price LIMIT $2 OFFSET $3;
 
 -- name: UpdateArmour :one

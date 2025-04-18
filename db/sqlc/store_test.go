@@ -19,7 +19,7 @@ func createRandomWeapon() CreateWeaponParams {
 		Damage:      "1d4",
 		Critical:    "19",
 		Range:       "Curto",
-		TypeDamage:  "Perfuração",
+		Category:    "Perfuração",
 		Property:    "Leve",
 		Proficiency: "Simples",
 		Special:     sql.NullString{String: "Discreta", Valid: true},
@@ -54,7 +54,7 @@ func createManyWeapons(t *testing.T) []Weapons {
 			Damage:      w.Damage,
 			Critical:    w.Critical,
 			Range:       w.Range,
-			TypeDamage:  w.TypeDamage,
+			Category:    w.Category,
 			Property:    w.Property,
 			Proficiency: w.Proficiency,
 			Special:     w.Special,
@@ -72,7 +72,7 @@ func createManyWeapons(t *testing.T) []Weapons {
 		require.Equal(t, arg.Damage, weapon.Damage)
 		require.Equal(t, arg.Critical, weapon.Critical)
 		require.Equal(t, arg.Range, weapon.Range)
-		require.Equal(t, arg.TypeDamage, weapon.TypeDamage)
+		require.Equal(t, arg.Category, weapon.Category)
 		require.Equal(t, arg.Property, weapon.Property)
 		require.Equal(t, arg.Proficiency, weapon.Proficiency)
 		require.Equal(t, arg.Special, weapon.Special)
@@ -85,7 +85,7 @@ func createManyWeapons(t *testing.T) []Weapons {
 		require.NotEmpty(t, weapon.Damage)
 		require.NotEmpty(t, weapon.Critical)
 		require.NotEmpty(t, weapon.Range)
-		require.NotEmpty(t, weapon.TypeDamage)
+		require.NotEmpty(t, weapon.Category)
 		require.NotEmpty(t, weapon.Property)
 		require.NotEmpty(t, weapon.Proficiency)
 
@@ -112,7 +112,7 @@ func TestCreateWeaponTx(t *testing.T) {
 	require.Equal(t, arg.Damage, weapon.Damage)
 	require.Equal(t, arg.Critical, weapon.Critical)
 	require.Equal(t, arg.Range, weapon.Range)
-	require.Equal(t, arg.TypeDamage, weapon.TypeDamage)
+	require.Equal(t, arg.Category, weapon.Category)
 	require.Equal(t, arg.Property, weapon.Property)
 	require.Equal(t, arg.Proficiency, weapon.Proficiency)
 	require.Equal(t, arg.Special, weapon.Special)
@@ -140,7 +140,7 @@ func TestGetWeaponTx(t *testing.T) {
 	require.Equal(t, weapon.Damage, fetchedWeapon.Damage)
 	require.Equal(t, weapon.Critical, fetchedWeapon.Critical)
 	require.Equal(t, weapon.Range, fetchedWeapon.Range)
-	require.Equal(t, weapon.TypeDamage, fetchedWeapon.TypeDamage)
+	require.Equal(t, weapon.Category, fetchedWeapon.Category)
 	require.Equal(t, weapon.Property, fetchedWeapon.Property)
 	require.Equal(t, weapon.Proficiency, fetchedWeapon.Proficiency)
 	require.Equal(t, weapon.Special, fetchedWeapon.Special)
@@ -169,9 +169,9 @@ func TestListWeaponsByCategory(t *testing.T) {
 	aux := createManyWeapons(t)
 
 	args := ListWeaponsByCategoryParams{
-		Limit:      10,
-		Offset:     5,
-		TypeDamage: aux[0].TypeDamage,
+		Limit:    10,
+		Offset:   5,
+		Category: aux[0].Category,
 	}
 
 	listWeapons, err := store.ListWeaponsByCategoryTx(context.Background(), args)
@@ -179,7 +179,7 @@ func TestListWeaponsByCategory(t *testing.T) {
 
 	for _, weapon := range listWeapons {
 		require.NotEmpty(t, weapon)
-		require.Equal(t, aux[0].TypeDamage, weapon.TypeDamage)
+		require.Equal(t, aux[0].Category, weapon.Category)
 	}
 }
 
@@ -200,7 +200,7 @@ func TestUpdateWeaponTx(t *testing.T) {
 		Damage:      weapon.Damage + "_updated",
 		Critical:    weapon.Critical + "_updated",
 		Range:       weapon.Range + "_updated",
-		TypeDamage:  weapon.TypeDamage + "_updated",
+		Category:    weapon.Category + "_updated",
 		Property:    weapon.Property + "_updated",
 		Proficiency: weapon.Proficiency + "_updated",
 		Special:     sql.NullString{String: weapon.Special.String + "_updated", Valid: true},
@@ -219,7 +219,7 @@ func TestUpdateWeaponTx(t *testing.T) {
 	require.Equal(t, updateArg.Damage, updatedWeapon.Damage)
 	require.Equal(t, updateArg.Critical, updatedWeapon.Critical)
 	require.Equal(t, updateArg.Range, updatedWeapon.Range)
-	require.Equal(t, updateArg.TypeDamage, updatedWeapon.TypeDamage)
+	require.Equal(t, updateArg.Category, updatedWeapon.Category)
 	require.Equal(t, updateArg.Property, updatedWeapon.Property)
 	require.Equal(t, updateArg.Proficiency, updatedWeapon.Proficiency)
 	require.Equal(t, updateArg.Special, updatedWeapon.Special)

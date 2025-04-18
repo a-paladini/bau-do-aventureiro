@@ -17,23 +17,20 @@ type bodyWeaponRequest struct {
 	Damage      string  `json:"damage"`
 	Critical    string  `json:"critical"`
 	Range       string  `json:"range"`
-	TypeDamage  string  `json:"type_damage"`
+	Category    string  `json:"category"`
 	Property    string  `json:"property"`
 	Proficiency string  `json:"proficiency"`
 	Special     string  `json:"special"`
 }
 
 type listWeaponsRequest struct {
-	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=1,max=10"`
+	Category string `form:"category"`
+	PageID   int32  `form:"page_id" binding:"min=1"`
+	PageSize int32  `form:"page_size" binding:"min=1,max=10"`
 }
 
 type getWeaponByIdRequest struct {
-	ID int64 `uri:"id" binding:"required,min=1"`
-}
-
-type listWeaponsByCategoryRequest struct {
-	Category string `uri:"category" binding:"required"`
+	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
 func (server *Server) createWeapon(ctx *gin.Context) {
@@ -52,7 +49,7 @@ func (server *Server) createWeapon(ctx *gin.Context) {
 		Damage:      req.Damage,
 		Critical:    req.Critical,
 		Range:       req.Range,
-		TypeDamage:  req.TypeDamage,
+		Category:    req.Category,
 		Property:    req.Property,
 		Proficiency: req.Proficiency,
 		Special:     sql.NullString{String: req.Special, Valid: true},
@@ -88,58 +85,43 @@ func (server *Server) getWeapon(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, weapon)
 }
 
-func (server *Server) listAllWeapons(ctx *gin.Context) {
+func (server *Server) listWeapons(ctx *gin.Context) {
 	var req listWeaponsRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	arg := db.ListAllWeaponsParams{
-		Limit:  req.PageSize,
-		Offset: (req.PageID - 1) * req.PageSize,
-	}
+	if req.Category != "" {
+		arg := db.ListWeaponsByCategoryParams{
+			Category: req.Category,
+			Limit:    req.PageSize,
+			Offset:   (req.PageID - 1) * req.PageSize,
+		}
 
-	listWeapon, err := server.store.ListAllWeapons(ctx, arg)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
+		weapons, err := server.store.ListWeaponsByCategory(ctx, arg)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
 		}
 
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		ctx.JSON(http.StatusOK, weapons)
 		return
+	} else {
+
+		arg := db.ListAllWeaponsParams{
+			Limit:  req.PageSize,
+			Offset: (req.PageID - 1) * req.PageSize,
+		}
+
+		weapons, err := server.store.ListAllWeapons(ctx, arg)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		ctx.JSON(http.StatusOK, weapons)
 	}
-
-	ctx.JSON(http.StatusOK, listWeapon)
-}
-
-func (server *Server) listWeaponsByCategory(ctx *gin.Context) {
-	var uriReq listWeaponsByCategoryRequest
-	if err := ctx.ShouldBindUri(&uriReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	var queryReq listWeaponsRequest
-	if err := ctx.ShouldBindQuery(&queryReq); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	arg := db.ListWeaponsByCategoryParams{
-		TypeDamage: uriReq.Category,
-		Limit:      queryReq.PageSize,
-		Offset:     (queryReq.PageID - 1) * queryReq.PageSize,
-	}
-
-	listWeapon, err := server.store.ListWeaponsByCategory(ctx, arg)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, listWeapon)
 }
 
 func (server *Server) deleteWeapon(ctx *gin.Context) {
@@ -165,9 +147,10 @@ func (server *Server) deleteWeapon(ctx *gin.Context) {
 }
 
 func (server *Server) updateWeapon(ctx *gin.Context) {
-	var id getWeaponByIdRequest
-	if err := ctx.BindUri(&id); err != nil {
-
+	var uriReq getWeaponByIdRequest
+	if err := ctx.BindUri(&uriReq); err != nil {
+		ctx.JSON(http.StatusNotFound, errorResponse(err))
+		return
 	}
 
 	var req bodyWeaponRequest
@@ -177,6 +160,7 @@ func (server *Server) updateWeapon(ctx *gin.Context) {
 	}
 
 	arg := db.UpdateWeaponParams{
+		ID:          uriReq.ID,
 		Name:        req.Name,
 		Description: req.Description,
 		Price:       req.Price,
@@ -185,7 +169,7 @@ func (server *Server) updateWeapon(ctx *gin.Context) {
 		Damage:      req.Damage,
 		Critical:    req.Critical,
 		Range:       req.Range,
-		TypeDamage:  req.TypeDamage,
+		Category:    req.Category,
 		Property:    req.Property,
 		Proficiency: req.Proficiency,
 		Special:     sql.NullString{String: req.Special, Valid: true},

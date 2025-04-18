@@ -8,7 +8,7 @@ CREATE TABLE "weapons" (
   "damage" VARCHAR NOT NULL,
   "critical" VARCHAR NOT NULL,
   "range" VARCHAR NOT NULL,
-  "type_damage" VARCHAR NOT NULL,
+  "category" VARCHAR NOT NULL,
   "property" VARCHAR NOT NULL,
   "proficiency" VARCHAR NOT NULL,
   "special" VARCHAR
@@ -35,7 +35,3 @@ CREATE TABLE "items" (
   "slot" FLOAT NOT NULL,
   "origin" VARCHAR NOT NULL
 );
-
-CREATE INDEX ON "weapons" ("type_damage");
-
-CREATE INDEX ON "items" ("category");

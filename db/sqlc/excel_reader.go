@@ -62,7 +62,7 @@ func ProcessExcelDataWeapons(sheets map[string][][]string) ([]Weapons, error) {
 				Damage:      row[2],
 				Critical:    row[3],
 				Range:       row[4],
-				TypeDamage:  row[5],
+				Category:    row[5],
 				Slot:        ParseFloat(row[6]),
 				Property:    row[7],
 				Proficiency: row[8],

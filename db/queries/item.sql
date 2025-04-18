@@ -14,7 +14,7 @@ ORDER BY category, price LIMIT $1 OFFSET $2;
 
 -- name: ListItemsByCategory :many
 SELECT * FROM items
-WHERE UPPER(category) = $1
+WHERE LOWER(category) = $1
 ORDER BY price, name LIMIT $2 OFFSET $3;
 
 -- name: UpdateItem :one

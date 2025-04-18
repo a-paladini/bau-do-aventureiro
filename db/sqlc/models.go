@@ -40,7 +40,7 @@ type Weapons struct {
 	Damage      string         `json:"damage"`
 	Critical    string         `json:"critical"`
 	Range       string         `json:"range"`
-	TypeDamage  string         `json:"type_damage"`
+	Category    string         `json:"category"`
 	Property    string         `json:"property"`
 	Proficiency string         `json:"proficiency"`
 	Special     sql.NullString `json:"special"`
